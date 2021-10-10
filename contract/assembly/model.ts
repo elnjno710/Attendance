@@ -16,3 +16,35 @@ export class StudentList {
  * It will be used as a prefix to all keys required to store data in the storage.
  */
 export const studentList = new PersistentVector<StudentList>("m");
+
+@nearBindgen
+export class StudentModel {
+  attendanceDate: Date;
+  sender: string;
+  token: f32;
+  note: string;
+
+    constructor(
+        attendanceDate: Date,
+        sender: string,
+        token: f32,
+        note: string,
+    ) {
+      attendanceDate = this.attendanceDate;
+      sender = this.sender;
+      token = this.token;
+      note = this.note;
+    }
+}
+
+@nearBindgen
+export class StudentList2 {
+  studentList: PersistentVector<StudentModel>
+
+  constructor(
+    studentList: PersistentVector<StudentModel>
+  ) {
+    studentList = this.studentList;
+  }
+}
+export const studentList2 = new PersistentVector<StudentModel>("m");

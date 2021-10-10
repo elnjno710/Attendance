@@ -33,7 +33,7 @@ async function initContract() {
     // View methods are read-only – they don't modify the state, but usually return some value
     viewMethods: ['getAttendance'],
     // Change methods can modify the state, but you don't receive the returned value when called
-    changeMethods: ['setAttendance'],
+    changeMethods: ['setAttendance','setAttendance2'],
     // Sender is the account ID to initialize transactions.
     // getAccountId() will return empty string if user is still unauthorized
     sender: walletConnection.getAccountId()

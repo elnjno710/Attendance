@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Big from 'big.js';
 import Form from './components/Form';
@@ -12,6 +12,7 @@ const BOATLOAD_OF_GAS = Big(3).times(10 ** 13).toFixed();
 
 const App = ({ contract, currentUser, nearConfig, wallet }) => {
   const [student, setStudent] = useState([]);
+  const [studentList, setStudentList] = useState([]);
   const [status, setStatus] = useState(0);
   const [isSend, setSend] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,8 +24,11 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
   }, []);
 
   async function checkStudent(){
-    contract.getAttendance().then(setStudent);
-    var lsStudent = await contract.getAttendance();
+    alert(1)
+    // var lsStudent = await contract.getAttendance2(moment(dateNow).format('yyyyMMDD'));
+    var lsStudent = await contract.getAttendance2();
+    alert(lsStudent)
+    setStudentList(lsStudent);
     for(var i = 0; i < lsStudent.length; i++)
     {
       var student = lsStudent[i];
@@ -56,8 +60,9 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
       const token = 0;
   
       try {
-        await contract.setAttendance(
-          { text: '111' },
+        const dateNow2 = new Date();
+        await contract.setAttendance2(
+          { date: moment(dateNow2).format('yyyyMMDD'), student: { attendanceDate: dateNow2, sender: currentUser.accountId, token: token, note: 'ok' } },
           BOATLOAD_OF_GAS,
           Big(token || '0').times(10 ** 24).toFixed()
         );
@@ -109,7 +114,7 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
             loading={loading} />
         : <SignIn/>
       }
-      { !!currentUser && !!student.length && <Student student={student}/> }
+      { !!currentUser && !!student.length && <Student studentList={studentList}/> }
     </main>
   );
 };

@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
-export default function Student({ student }) {
+export default function Student({ studentList }) {
   return (
     <>
       <br />
@@ -11,13 +12,15 @@ export default function Student({ student }) {
           <th>Name</th>
           <th>Time</th>
           <th>Tokens are penalized</th>
+          <th>Note</th>
         </tr>
-        {student.map((message, i) =>
+        {studentList.map((student, i) =>
         <tr>
           <td>{i + 1}</td>
-          <td><strong>{message.sender}</strong></td>
-          <td>{message.text}</td>
-          <td></td>
+          <td><strong>{student.sender}</strong></td>
+          <td>{moment(student.attendanceDate).format('H:mm A')}</td>
+          <td>{student.token}</td>
+          <td>{student.note}</td>
         </tr>
       )}
       </table>

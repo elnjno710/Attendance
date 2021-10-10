@@ -12,8 +12,8 @@
  *
  */
 
-import { Context, logging } from 'near-sdk-as';
-import { StudentList, studentList } from './model'
+import { Context, logging, storage } from 'near-sdk-as'
+import { StudentList, studentList, studentList2, StudentList2, StudentModel } from './model'
 
 const STUDENT_LIMIT = 1000;
 
@@ -36,4 +36,23 @@ export function setAttendance(text: string): void {
   const message = new StudentList(text);
   // Adding the message to end of the the persistent collection
   studentList.push(message);
+}
+
+export function setAttendance2(date: string, student: StudentList2): void {
+  const account_id = Context.sender
+  logging.log('Student "' + account_id + '" takes attendance')
+  storage.set(date, student);
+}
+
+const DEFAULT_MESSAGE = 'Hello'
+// let studentList22222 = new Array<StudentModel>();
+export function getAttendance2(): StudentModel[] {
+  const numMessages = min(STUDENT_LIMIT, studentList2.length);
+  const startIndex = studentList2.length - numMessages;
+  const result = new Array<StudentModel>(numMessages);
+  for(let i = 0; i < numMessages; i++) {
+    result[i] = studentList2[i + startIndex];
+  }
+  return result;
+  // return storage.get<Array<StudentModel>>(date, studentList22222)
 }
