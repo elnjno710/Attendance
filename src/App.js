@@ -30,8 +30,8 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
       var student = lsStudent[i];
       if(student.sender.indexOf(currentUser.accountId) > -1)
       {
-        setSend(true);
-        setStatus(2);
+        // setSend(true);
+        // setStatus(2);
       }
     }
     const timeNow = new Date().getUTCHours();
