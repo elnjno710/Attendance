@@ -16,7 +16,7 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
   const [isSend, setSend] = useState(false);
   const [loading, setLoading] = useState(false);
   const dateNow = new Date();
-  const expireTime = new Date('January 1, 2000, 17:00');
+  const expireTime = new Date('January 1, 2000, 10:00');
 
   useEffect(() => {
     checkStudent();
@@ -30,8 +30,8 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
       var student = lsStudent[i];
       if(student.sender.indexOf(currentUser.accountId) > -1)
       {
-        // setSend(true);
-        // setStatus(2);
+        setSend(true);
+        setStatus(2);
       }
     }
     const timeNow = new Date().getUTCHours();
