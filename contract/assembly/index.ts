@@ -13,7 +13,7 @@
  */
 
 import { Context, logging, storage } from 'near-sdk-as'
-import { StudentList, studentList, studentList2, StudentList2, StudentModel } from './model'
+import { studentList, StudentModel } from './model'
 
 const STUDENT_LIMIT = 1000;
 
@@ -21,30 +21,23 @@ const STUDENT_LIMIT = 1000;
  * Returns an array of last N messages.\
  * NOTE: This is a view method. Which means it should NOT modify the state.
  */
-export function getAttendance(): StudentList[] {
+
+export function setAttendance(attendanceDate: string, attendanceTime:  string, sender: string, token: string, note: string): void {
+  let student = new StudentModel (
+    attendanceDate,
+    attendanceTime,
+    token,
+    note,
+  )
+  studentList.push(student);
+}
+
+export function getAttendance(): StudentModel[] | null {
   const numMessages = min(STUDENT_LIMIT, studentList.length);
   const startIndex = studentList.length - numMessages;
-  const result = new Array<StudentList>(numMessages);
+  const result = new Array<StudentModel>(numMessages);
   for(let i = 0; i < numMessages; i++) {
-    result[i] = studentList[i + startIndex];
+      result[i] = studentList[i + startIndex];
   }
   return result;
-}
-
-export function setAttendance(text: string): void {
-  // Creating a new message and populating fields with our data
-  const message = new StudentList(text);
-  // Adding the message to end of the the persistent collection
-  studentList.push(message);
-}
-
-export function setAttendance2(date: string, student: StudentList2): void {
-  const account_id = Context.sender
-  logging.log('Student "' + account_id + '" takes attendance')
-  storage.set(date, student);
-}
-
-const DEFAULT_MESSAGE = 'Hello'
-export function getAttendance2(date: string): StudentList2 | null {
-  return storage.get<StudentList2>(date)
 }

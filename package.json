@@ -37,6 +37,7 @@
     "react-confirm-alert": "^2.7.0",
     "react-dom": ">=16.0.0",
     "react-native": "^0.66.0",
+    "react-string-format": "^1.0.0",
     "regenerator-runtime": "~0.13.5"
   },
   "jest": {

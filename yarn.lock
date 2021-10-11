@@ -9570,6 +9570,11 @@ react-refresh@^0.4.0:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.4.3.tgz#966f1750c191672e76e16c2efa569150cc73ab53"
   integrity sha512-Hwln1VNuGl/6bVwnd0Xdn1e84gT/8T9aYNL+HAKDArLCS7LWjwr7StE30IEYbIkx0Vi3vs+coQxe+SQDbGbbpA==
 
+react-string-format@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-string-format/-/react-string-format-1.0.0.tgz#3809fe59a403a5f117221a5b802b4a1b0caac3f0"
+  integrity sha512-CTY5BRUfeSmb45xkXTjxhWzn1ZsRtoVj7YXWGbUrORiRupaQDnFJmFkDr9IntpagYztCBKrhI0bmN0pTnZ3fdQ==
+
 react@>=16.0.0:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"

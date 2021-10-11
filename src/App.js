@@ -6,6 +6,7 @@ import Form from './components/Form';
 import SignIn from './components/SignIn';
 import Student from './components/Student';
 import moment from 'moment';
+import { format } from 'react-string-format';
 
 const SUGGESTED_DONATION = '0';
 const BOATLOAD_OF_GAS = Big(3).times(10 ** 13).toFixed();
@@ -17,38 +18,54 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
   const [isSend, setSend] = useState(false);
   const [loading, setLoading] = useState(false);
   const dateNow = new Date();
-  const expireTime = new Date('January 1, 2000, 10:00');
+  const expireFromTime = new Date(moment(dateNow).format('yyyy/MM/DD 12:00'));
+  const expireToTime = new Date(moment(dateNow).format('yyyy/MM/DD 14:00'));
+  const attendanceDate = moment(dateNow).format('yyyyMMDD')
+  const feeLate = 0.0001;
+  let token = '0';
 
   useEffect(() => {
     checkStudent();
   }, []);
 
   async function checkStudent(){
-    alert(1)
-    // var lsStudent = await contract.getAttendance2(moment(dateNow).format('yyyyMMDD'));
-    var lsStudent = await contract.getAttendance2({date: moment(dateNow).format('yyyyMMDD')});
-    alert(JSON.stringify(lsStudent))
+    const timeNow = new Date().getUTCHours();
+    const toTimeExpire = expireToTime.getUTCHours();
+    if(timeNow >= toTimeExpire)
+    {
+      setSend(true);
+      setStatus(1);
+    }
+
+    var lsStudent = await contract.getAttendance();
     setStudentList(lsStudent);
     for(var i = 0; i < lsStudent.length; i++)
     {
       var student = lsStudent[i];
-      if(student.sender.indexOf(currentUser.accountId) > -1)
+      if(student.attendanceDate == attendanceDate && student.sender.indexOf(currentUser.accountId) > -1)
       {
         setSend(true);
         setStatus(2);
       }
     }
-    const timeNow = new Date().getUTCHours();
-    const timeExpire = expireTime.getUTCHours();
-    if(timeNow > timeExpire)
-    {
-      setSend(true);
-      setStatus(1);
-    }
   }
 
   const onSubmit = async (e) => {
-    if(window.confirm('Do you want to attendance?'))
+    let question = "Do you want to attendance?";
+    let note = '';
+    const dateNow2 = new Date();
+    const timeNow = dateNow2.getUTCHours();
+    const fromTimeExpire = expireFromTime.getUTCHours();
+    const toTimeExpire = expireToTime.getUTCHours();
+    if(fromTimeExpire <= timeNow  && timeNow <= toTimeExpire)
+    {
+      const timeLate = Math.floor((Math.abs(dateNow2-expireFromTime))/(1000*60));
+      question = format('You are {0} minutes late, do you want to attendance?', timeLate);
+      note = format('{0} is {1} minutes late', currentUser.accountId, timeLate);
+      token = (feeLate * timeLate).toString();
+    }
+
+    if(window.confirm(question))
     {
       e.preventDefault();
   
@@ -57,14 +74,12 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
   
       fieldset.disabled = true;
   
-      const token = 0;
-  
       try {
         const dateNow2 = new Date();
-        await contract.setAttendance2(
-          { date: moment(dateNow2).format('yyyyMMDD'), student: { attendanceDate: dateNow2, sender: currentUser.accountId, token: token, note: 'ok' } },
+        await contract.setAttendance(
+          { attendanceDate: moment(dateNow2).format('yyyyMMDD'), attendanceTime: moment(dateNow2).format('H:mm'), sender: currentUser.accountId, token: token, note: note },
           BOATLOAD_OF_GAS,
-          Big(token || '0').times(10 ** 24).toFixed()
+          Big(parseFloat(token) || '0').times(10 ** 24).toFixed()
         );
       } catch (e) {
         alert(
@@ -76,6 +91,7 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
       } finally {
         // re-enable the form, whether the call succeeded or failed
         checkStudent();
+        window.alert("Successfully registered!!!")
         setLoading(false);
         fieldset.disabled = false
       }
@@ -107,13 +123,13 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
       { currentUser
         ? <Form onSubmit={onSubmit} currentUser={currentUser} 
             dateNow={moment(dateNow).format('dddd, MMMM DD, yyyy')} 
-            expireTime={moment(expireTime).format('H:mm A')} 
+            expireTime={moment(expireFromTime).format('H:mm A') + ' - ' + moment(expireToTime).format('H:mm A')} 
             status={status}
             isSend={isSend} 
             loading={loading} />
         : <SignIn/>
       }
-      { !!currentUser && !!studentList.length && <Student studentList={studentList}/> }
+      { !!currentUser && !!studentList.length && <Student studentList={studentList} attendanceDate={attendanceDate}/> }
     </main>
   );
 };
