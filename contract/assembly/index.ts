@@ -45,14 +45,6 @@ export function setAttendance2(date: string, student: StudentList2): void {
 }
 
 const DEFAULT_MESSAGE = 'Hello'
-// let studentList22222 = new Array<StudentModel>();
-export function getAttendance2(): StudentModel[] {
-  const numMessages = min(STUDENT_LIMIT, studentList2.length);
-  const startIndex = studentList2.length - numMessages;
-  const result = new Array<StudentModel>(numMessages);
-  for(let i = 0; i < numMessages; i++) {
-    result[i] = studentList2[i + startIndex];
-  }
-  return result;
-  // return storage.get<Array<StudentModel>>(date, studentList22222)
+export function getAttendance2(date: string): StudentList2 | null {
+  return storage.get<StudentList2>(date)
 }

@@ -26,8 +26,8 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
   async function checkStudent(){
     alert(1)
     // var lsStudent = await contract.getAttendance2(moment(dateNow).format('yyyyMMDD'));
-    var lsStudent = await contract.getAttendance2();
-    alert(lsStudent)
+    var lsStudent = await contract.getAttendance2({date: moment(dateNow).format('yyyyMMDD')});
+    alert(JSON.stringify(lsStudent))
     setStudentList(lsStudent);
     for(var i = 0; i < lsStudent.length; i++)
     {
@@ -67,7 +67,6 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
           Big(token || '0').times(10 ** 24).toFixed()
         );
       } catch (e) {
-        alert(e)
         alert(
           'Something went wrong! ' +
           'Maybe you need to sign out and back in? ' +
@@ -114,7 +113,7 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
             loading={loading} />
         : <SignIn/>
       }
-      { !!currentUser && !!student.length && <Student studentList={studentList}/> }
+      { !!currentUser && !!studentList.length && <Student studentList={studentList}/> }
     </main>
   );
 };
